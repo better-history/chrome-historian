@@ -1,0 +1,17 @@
+{
+  "name": "chrome-history-api",
+  "description": "A better wrapper for the Chrome History API",
+  "version": "0.0.1",
+  "author": "Roy Kolak <roy.kolak@gmail.com>",
+  "scripts": {
+    "start": "node_modules/.bin/coffee -w -o src/ lib/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/roykolak/chrome-history-api.git"
+  },
+  "devDependencies": {
+    "coffee-script": "1.7.1"
+  },
+  "license": "MIT"
+}
