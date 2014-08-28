@@ -1,1 +1,2 @@
-coffee = true
+ChromeHistorian =
+  Day: require('./day.coffee')

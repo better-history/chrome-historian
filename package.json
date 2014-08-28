@@ -4,14 +4,16 @@
   "version": "0.0.1",
   "author": "Roy Kolak <roy.kolak@gmail.com>",
   "scripts": {
-    "start": "node_modules/.bin/coffee -w -o src/ lib/"
+    "start": "node_modules/.bin/browserify -t coffeeify lib/index.coffee > src/index.js; node_modules/.bin/coffee -o src/workers/ lib/workers/*"
   },
   "repository": {
     "type": "git",
     "url": "http://github.com/roykolak/chrome-history-api.git"
   },
   "devDependencies": {
-    "coffee-script": "1.7.1"
+    "coffee-script": "1.7.1",
+    "browserify": "5.11.0",
+    "coffeeify": "0.7.0"
   },
   "license": "MIT"
 }
