@@ -1,6 +1,7 @@
-ChromeHistoryAPI = require './chrome_history_api'
+ChromeHistoryAPI = require './chrome_history_api.coffee'
+Processor = require './processor.coffee'
 
-class BH.Lib.SearchHistory
+class Search
   constructor: (@query) ->
     @history = new ChromeHistoryAPI()
 
@@ -26,7 +27,7 @@ class BH.Lib.SearchHistory
             options: {text: @query}
             results: history
 
-          @worker 'searchSanitizer', options, (results) =>
+          new Processor 'search_sanitizer.js', options, (results) =>
             setCache = (results) =>
               chrome.storage.local.set lastSearchCache:
                 results: results
@@ -36,7 +37,7 @@ class BH.Lib.SearchHistory
                 endTime: endTime
 
             if startTime && endTime
-              @worker 'rangeSanitizer', {
+              new Processor 'range_sanitizer.js', {
                 options:
                   startTime: startTime
                   endTime: endTime

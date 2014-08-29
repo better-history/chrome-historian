@@ -1,4 +1,5 @@
 ChromeHistoryAPI = require './chrome_history_api.coffee'
+Processor = require './processor.coffee'
 
 class Day
   constructor: (date) ->
@@ -22,14 +23,8 @@ class Day
         options: options
         results: results
 
-      worker = new Worker 'workers/range_sanitizer.js'
-      worker.postMessage(options)
-      worker.onmessage = (e) ->
-        if (e.data.log)
-          console.log(e.data.log)
-        else
-          callback(e.data)
-          worker.terminate()
+      new Processor 'range_sanitizer.js', options, (visits) ->
+        callback(visits)
 
   destroy: (callback = ->) ->
     options =
