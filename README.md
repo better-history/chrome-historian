@@ -4,3 +4,54 @@ chrome-historian
 A better wrapper for the [Chrome History API](https://developer.chrome.com/extensions/history)
 
 a.k.a. the secret sauce behind [Better History](https://chrome.google.com/webstore/detail/better-history/obciceimmggglbmelaidpjlmodcebijb)
+
+
+Managing a day's history
+---------------------
+
+The Chrome History API has been known to return visits that do not fall between the requested dates and visits that are out of order. Querying a day's history via ChromeHistorian will guarantee all returned visits occured on the requested day and are in descending order.
+
+```coffee
+  dayHistorian = new ChromeHistorian.Day(new Date())
+
+  dayHistorian.fetch (visits) ->
+    console.log(visits)
+
+  dayHistorian.destroy()
+
+  dayHistorian.destroyHour(22)
+```
+
+
+Searching history
+---------------------
+
+The Chrome History API has been known to return very generous matches (not in a good way). Searching via ChromeHistorian will guarantee all returned visits have a title or url that partially matches the query.
+
+```coffee
+  searchHistorian = new ChromeHistorian.search('gmail')
+
+  searchHistorian.fetch maxResults: 10000, (visits) ->
+    console.log(visits)
+
+  # The search historian caches the last search via chrome's local storage api
+  searchHistorian.expireCache()
+
+  # It's important to use this to delete call so that the cache is expired
+  searchHistorian.deleteUrl()
+
+  searchHistorian.destroy()
+```
+
+Simple deleting
+----------------------
+
+```coffee
+  ChromeHistorian.deleteUrl('http://google.com')
+
+  ChromeHistorian.deleteRange
+    startTime: new Date('Aug 20, 2014')
+    endTime: new Date('Aug 30, 2014')
+
+  ChromeHistorian.deleteAll()
+```
