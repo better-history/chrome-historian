@@ -37,9 +37,8 @@ The Chrome History API has been known to return very generous matches (not in a 
   # The search historian caches the last search via chrome's local storage api
   searchHistorian.expireCache()
 
-  # It's important to use this to delete call so that the cache is expired
+  # It's important to use these to delete because they both expire the previous search cache
   searchHistorian.deleteUrl()
-
   searchHistorian.destroy()
 ```
 
