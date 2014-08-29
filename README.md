@@ -9,7 +9,7 @@ a.k.a. the secret sauce behind [Better History](https://chrome.google.com/websto
 Managing a day's history
 ---------------------
 
-The Chrome History API has been known to return visits that do not fall between the requested dates and visits that are out of order. Querying a day's history via ChromeHistorian will guarantee all returned visits occured on the requested day and are in descending order.
+The Chrome History API has been known to return visits that do not fall between the requested dates and visits that are out of order. Querying a day's history via Chrome Historian will guarantee all returned visits occured on the requested day and are in descending order.
 
 ```coffee
   dayHistorian = new Historian.Day(new Date())
@@ -26,7 +26,7 @@ The Chrome History API has been known to return visits that do not fall between 
 Searching history
 ---------------------
 
-The Chrome History API has been known to return very generous matches (not in a good way). Searching via ChromeHistorian will guarantee all returned visits have a title or url that partially matches the query.
+The Chrome History API has been known to return very generous matches (not in a good way). Searching via Chrome Historian will guarantee all returned visits have a title or url that partially matches the query.
 
 ```coffee
   searchHistorian = new Historian.Search('gmail')
