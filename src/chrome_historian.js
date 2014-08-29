@@ -150,14 +150,36 @@ module.exports = Day;
 
 
 },{"./chrome_history_api.coffee":1,"./processor.coffee":4}],3:[function(require,module,exports){
+var ChromeHistoryAPI, historyAPI,
+  __slice = [].slice;
+
+ChromeHistoryAPI = require('./chrome_history_api.coffee');
+
+historyAPI = new ChromeHistoryAPI();
+
 window.ChromeHistorian = {
   Day: require('./day.coffee'),
-  Search: require('./search.coffee')
+  Search: require('./search.coffee'),
+  deleteUrl: function() {
+    var args;
+    args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+    return historyAPI.deleteUrl.apply(historyAPI, args);
+  },
+  deleteRange: function() {
+    var args;
+    args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+    return historyAPI.deleteRange.apply(historyAPI, args);
+  },
+  deleteAll: function() {
+    var args;
+    args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+    return historyAPI.deleteAll.apply(historyAPI, args);
+  }
 };
 
 
 
-},{"./day.coffee":2,"./search.coffee":5}],4:[function(require,module,exports){
+},{"./chrome_history_api.coffee":1,"./day.coffee":2,"./search.coffee":5}],4:[function(require,module,exports){
 var Processor;
 
 Processor = (function() {
