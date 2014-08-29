@@ -4,7 +4,7 @@
   "version": "0.1.0",
   "author": "Roy Kolak <roy.kolak@gmail.com>",
   "scripts": {
-    "start": "node_modules/.bin/browserify -t coffeeify lib/index.coffee > src/chrome_historian.js; node_modules/.bin/coffee -o src/workers/ lib/workers/*"
+    "start": "node_modules/.bin/browserify -t coffeeify lib/index.coffee > src/historian.js; node_modules/.bin/coffee -o src/workers/ lib/workers/*"
   },
   "repository": {
     "type": "git",
