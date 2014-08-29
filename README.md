@@ -29,7 +29,7 @@ Searching history
 The Chrome History API has been known to return very generous matches (not in a good way). Searching via ChromeHistorian will guarantee all returned visits have a title or url that partially matches the query.
 
 ```coffee
-  searchHistorian = new Historian.search('gmail')
+  searchHistorian = new Historian.Search('gmail')
 
   searchHistorian.fetch maxResults: 10000, (visits) ->
     console.log(visits)
