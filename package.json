@@ -4,7 +4,8 @@
   "version": "0.2.0",
   "author": "Roy Kolak <roy.kolak@gmail.com>",
   "scripts": {
-    "start": "node_modules/.bin/browserify -t coffeeify lib/index.coffee > src/historian.js; node_modules/.bin/coffee -o src/workers/ lib/workers/*"
+    "start": "node_modules/.bin/browserify -t coffeeify lib/index.coffee > src/historian.js; node_modules/.bin/coffee -o src/workers/ lib/workers/*",
+    "test": "node_modules/jasmine-node/bin/jasmine-node --coffee spec/"
   },
   "repository": {
     "type": "git",
@@ -13,6 +14,7 @@
   "devDependencies": {
     "coffee-script": "1.7.1",
     "browserify": "5.11.0",
+    "jasmine-node": "1.14.5",
     "coffeeify": "0.7.0"
   },
   "license": "MIT"
