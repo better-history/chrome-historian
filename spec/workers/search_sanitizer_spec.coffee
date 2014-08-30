@@ -20,10 +20,10 @@ describe "SearchSanitizer WebWorker", ->
 
   it "matches results by checking if the search term exists in the title, url, time, or date of the visit", ->
     visits = Fixtures.variousVisits()
-    sanitizedVisits = @searchSanitizer.run(visits, text: 'september something 12:3')
+    sanitizedVisits = @searchSanitizer.run(visits, text: 'september something')
 
     titles = (visit.title for visit in sanitizedVisits)
-    expect(titles).toEqual ['September something', 'something', 'Normal something']
+    expect(titles).toEqual ['September something', 'Normal something']
 
   it "orders the matched results by lastVisitTime", ->
     visits = Fixtures.outOfOrderVisits()
