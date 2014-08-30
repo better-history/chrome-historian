@@ -1,3 +1,5 @@
+global.onServer = true
+
 beforeEach ->
   global.chrome =
     history:

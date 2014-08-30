@@ -32,7 +32,9 @@ getDomain = (url) ->
   match = url.match(/\w+:\/\/(.*?)\//)
   if match == null then null else match[0]
 
-if self?
+if onServer?
+  module.exports = RangeSanitizer
+else
   self.addEventListener 'message', (e) ->
     sanitizer = new RangeSanitizer()
     postMessage(sanitizer.run(e.data.results, e.data.options))

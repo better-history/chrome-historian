@@ -1,7 +1,4 @@
-@BH = BH ? {}
-BH.Workers = BH.Workers ? {}
-
-class BH.Workers.SearchSanitizer
+class SearchSanitizer
   run: (results, @options) ->
     @terms = @options.text.split(' ')
 
@@ -41,7 +38,9 @@ class BH.Workers.SearchSanitizer
     return 1 if a.lastVisitTime < b.lastVisitTime
     0
 
-unless onServer?
+if onServer?
+  module.exports = SearchSanitizer
+else
   self.addEventListener 'message', (e) ->
-    sanitizer = new BH.Workers.SearchSanitizer()
+    sanitizer = new SearchSanitizer()
     postMessage(sanitizer.run(e.data.results, e.data.options))
