@@ -1,5 +1,5 @@
 language: node_js
-nodje:
-  - 0.10
+node_js:
+  - "0.10"
   notifications:
     email: false
