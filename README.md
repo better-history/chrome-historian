@@ -23,7 +23,6 @@ The Chrome History API has been known to return visits that do not fall between 
   dayHistorian.destroyHour(22)
 ```
 
-
 Searching history
 ---------------------
 
@@ -43,6 +42,25 @@ The Chrome History API has been known to return very generous matches (not in a 
   searchHistorian.deleteUrl()
   searchHistorian.destroy()
 ```
+
+Device Sessions
+---------------------
+
+Easily interaction with Device browser sessions that are logged into the same Google account
+```coffee
+  historian = new Historian.Devices()
+
+  devices = historian.fetch()
+  # ['Nexus 5', 'Desktop', 'Nexus 7']
+
+  historian.fetchSessions(device[0], (sessions) ->
+    console.log(sessions)
+    # [{
+    #   sessionId: 'session_sync43908482591051-257446.1'
+    #   sites: []
+    # }]
+```
+
 
 Simple deleting
 ----------------------
