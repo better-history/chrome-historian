@@ -202,10 +202,9 @@ Devices = (function() {
       return new Processor('groomer.js', {
         results: visits
       }, function(results) {
-        debugger;
         out.push({
           id: session.window.sessionId,
-          visits: results
+          sites: results
         });
         if (i === numberOfSessions) {
           return callback(out);
@@ -224,7 +223,7 @@ Devices = (function() {
             _results1 = [];
             for (i = _j = 0, _len1 = _ref.length; _j < _len1; i = ++_j) {
               session = _ref[i];
-              _results1.push(processSession(session, i, device.sessions.length));
+              _results1.push(processSession(session, i + 1, device.sessions.length));
             }
             return _results1;
           })());

@@ -22,8 +22,7 @@ class Devices
     processSession = (session, i, numberOfSessions) ->
       visits = session.window.tabs
       new Processor 'groomer.js', results: visits, (results) ->
-        debugger
-        out.push id: session.window.sessionId, visits: results
+        out.push id: session.window.sessionId, sites: results
         callback(out) if i == numberOfSessions
 
     @history.sessions (devices) ->
