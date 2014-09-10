@@ -1,64 +1,4 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-var ActiveSessions, ChromeHistoryAPI, Processor;
-
-ChromeHistoryAPI = require('./chrome_history_api.coffee');
-
-Processor = require('./processor.coffee');
-
-ActiveSessions = (function() {
-  function ActiveSessions() {
-    this.history = new ChromeHistoryAPI();
-  }
-
-  ActiveSessions.prototype.fetchDevices = function(callback) {
-    return this.history.sessions(function(devices) {
-      var device, names;
-      names = (function() {
-        var _i, _len, _results;
-        _results = [];
-        for (_i = 0, _len = devices.length; _i < _len; _i++) {
-          device = devices[_i];
-          _results.push({
-            name: device.deviceName,
-            lastChanged: device.sessions[0].lastModified
-          });
-        }
-        return _results;
-      })();
-      return callback(names);
-    });
-  };
-
-  ActiveSessions.prototype.fetchDeviceSession = function(name, callback) {
-    return this.history.sessions(function(devices) {
-      var device, visits, _i, _len, _results;
-      _results = [];
-      for (_i = 0, _len = devices.length; _i < _len; _i++) {
-        device = devices[_i];
-        if (device.deviceName === name) {
-          visits = device.sessions[0].window.tabs;
-          _results.push(new Processor('groomer.js', {
-            results: visits
-          }, function(results) {
-            return callback(results);
-          }));
-        } else {
-          _results.push(void 0);
-        }
-      }
-      return _results;
-    });
-  };
-
-  return ActiveSessions;
-
-})();
-
-module.exports = ActiveSessions;
-
-
-
-},{"./chrome_history_api.coffee":2,"./processor.coffee":5}],2:[function(require,module,exports){
 var ChromeHistoryAPI;
 
 ChromeHistoryAPI = (function() {
@@ -134,7 +74,7 @@ module.exports = ChromeHistoryAPI;
 
 
 
-},{}],3:[function(require,module,exports){
+},{}],2:[function(require,module,exports){
 var ChromeHistoryAPI, Day, Processor;
 
 ChromeHistoryAPI = require('./chrome_history_api.coffee');
@@ -222,7 +162,89 @@ module.exports = Day;
 
 
 
-},{"./chrome_history_api.coffee":2,"./processor.coffee":5}],4:[function(require,module,exports){
+},{"./chrome_history_api.coffee":1,"./processor.coffee":5}],3:[function(require,module,exports){
+var ChromeHistoryAPI, Devices, Processor;
+
+ChromeHistoryAPI = require('./chrome_history_api.coffee');
+
+Processor = require('./processor.coffee');
+
+Devices = (function() {
+  function Devices() {
+    this.history = new ChromeHistoryAPI();
+  }
+
+  Devices.prototype.fetch = function(callback) {
+    return this.history.sessions(function(devices) {
+      var device, names;
+      names = (function() {
+        var _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = devices.length; _i < _len; _i++) {
+          device = devices[_i];
+          _results.push({
+            name: device.deviceName,
+            lastChanged: device.sessions[0].lastModified
+          });
+        }
+        return _results;
+      })();
+      return callback(names);
+    });
+  };
+
+  Devices.prototype.fetchSessions = function(name, callback) {
+    var out, processSession;
+    out = [];
+    processSession = function(session, i, numberOfSessions) {
+      var visits;
+      visits = session.window.tabs;
+      return new Processor('groomer.js', {
+        results: visits
+      }, function(results) {
+        debugger;
+        out.push({
+          id: session.window.sessionId,
+          visits: results
+        });
+        if (i === numberOfSessions) {
+          return callback(out);
+        }
+      });
+    };
+    return this.history.sessions(function(devices) {
+      var device, i, session, _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = devices.length; _i < _len; _i++) {
+        device = devices[_i];
+        if (device.deviceName === name) {
+          _results.push((function() {
+            var _j, _len1, _ref, _results1;
+            _ref = device.sessions;
+            _results1 = [];
+            for (i = _j = 0, _len1 = _ref.length; _j < _len1; i = ++_j) {
+              session = _ref[i];
+              _results1.push(processSession(session, i, device.sessions.length));
+            }
+            return _results1;
+          })());
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    });
+  };
+
+  return Devices;
+
+})();
+
+module.exports = Devices;
+
+
+
+},{"./chrome_history_api.coffee":1,"./processor.coffee":5}],4:[function(require,module,exports){
 var ChromeHistoryAPI, historyAPI,
   __slice = [].slice;
 
@@ -231,7 +253,7 @@ ChromeHistoryAPI = require('./chrome_history_api.coffee');
 historyAPI = new ChromeHistoryAPI();
 
 window.Historian = {
-  ActiveSessions: require('./active_sessions.coffee'),
+  Devices: require('./devices.coffee'),
   Day: require('./day.coffee'),
   Search: require('./search.coffee'),
   deleteUrl: function() {
@@ -253,7 +275,7 @@ window.Historian = {
 
 
 
-},{"./active_sessions.coffee":1,"./chrome_history_api.coffee":2,"./day.coffee":3,"./search.coffee":6}],5:[function(require,module,exports){
+},{"./chrome_history_api.coffee":1,"./day.coffee":2,"./devices.coffee":3,"./search.coffee":6}],5:[function(require,module,exports){
 var Processor;
 
 Processor = (function() {
@@ -420,4 +442,4 @@ module.exports = Search;
 
 
 
-},{"./chrome_history_api.coffee":2,"./processor.coffee":5}]},{},[4]);
+},{"./chrome_history_api.coffee":1,"./processor.coffee":5}]},{},[4]);
