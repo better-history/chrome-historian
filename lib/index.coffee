@@ -2,6 +2,7 @@ ChromeHistoryAPI = require('./chrome_history_api.coffee')
 historyAPI = new ChromeHistoryAPI()
 
 window.Historian =
+  Devices: require('./devices.coffee')
   Day: require('./day.coffee')
   Search: require('./search.coffee')
   deleteUrl: (args...) ->

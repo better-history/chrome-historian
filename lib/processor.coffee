@@ -1,5 +1,5 @@
 class Processor
-  constructor: (file, options, callback) ->
+  constructor: (file, options = {}, callback) ->
     path = options.path || "scripts/workers/"
     worker = new Worker path + file
     worker.postMessage(options)

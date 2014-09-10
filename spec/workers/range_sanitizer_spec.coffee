@@ -15,28 +15,6 @@ describe "RangeSanitizer WebWorker", ->
     sanitizedVisits = @rangeSanitizer.run(visits, options)
     expect(sanitizedVisits.length).toEqual(150)
 
-  describe "Additional properties", ->
-    it "sets a property called location to be equal to the url", ->
-      options =
-        startTime: new Date("October 1, 2010")
-        endTime: new Date("October 14, 2010")
-
-      visits = Fixtures.variousVisits()
-      sanitizedVisits = @rangeSanitizer.run(visits, options)
-      expect(sanitizedVisits[0].location).toEqual 'bread.com'
-
-  describe "Removing script tags", ->
-    it "removes any script tags in the title and url", ->
-      options =
-        startTime: new Date("June 1, 2010")
-        endTime: new Date("October 14, 2011")
-
-      visits = Fixtures.visitsWithScriptTag()
-      sanitizedVisits = @rangeSanitizer.run(visits, options)
-
-      expect(sanitizedVisits[0].title).toEqual("testalert(\"yo\")")
-      expect(sanitizedVisits[1].location).toEqual("yahoo.comalert(\"yo\")")
-
   it "orders the matched results by lastVisitTime", ->
     options =
       startTime: new Date("June 1, 2010")

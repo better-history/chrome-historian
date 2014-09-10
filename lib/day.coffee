@@ -24,7 +24,8 @@ class Day
         results: results
 
       new Processor 'range_sanitizer.js', options, (visits) ->
-        callback(visits)
+        new Processor 'groomer.js', results: visits, (visits) ->
+          callback(visits)
 
   destroy: (callback = ->) ->
     options =

@@ -1,6 +1,10 @@
 class ChromeHistoryAPI
   constructor: (@chromeAPI = chrome) ->
 
+  sessions: (callback = ->) ->
+    @chromeAPI.sessions.getDevices (devices) ->
+      callback(devices)
+
   query: (options, callback = ->) ->
     @chromeAPI.history.search options, (visits) =>
       callback(visits)

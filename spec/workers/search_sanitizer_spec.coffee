@@ -11,13 +11,6 @@ describe "SearchSanitizer WebWorker", ->
 
     expect(sanitizedVisits.length).toEqual(1000)
 
-  it "removes any script tags in the title or url", ->
-    visits = Fixtures.visitsWithScriptTag()
-    sanitizedVisits = @searchSanitizer.run(visits, text: 'test')
-
-    expect(sanitizedVisits[0].title).toEqual("testalert(\"yo\")")
-    expect(sanitizedVisits[1].location).toEqual("yahoo.comalert(\"yo\")")
-
   it "matches results by checking if the search term exists in the title, url, time, or date of the visit", ->
     visits = Fixtures.variousVisits()
     sanitizedVisits = @searchSanitizer.run(visits, text: 'september something')

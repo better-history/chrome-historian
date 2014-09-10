@@ -28,13 +28,14 @@ class Search
             results: history
 
           new Processor 'search_sanitizer.js', options, (results) =>
-            setCache = (results) =>
-              chrome.storage.local.set lastSearchCache:
-                results: results
-                datetime: new Date().getTime()
-                query: @query
-                startTime: startTime
-                endTime: endTime
+            new Processor 'groomer.js', results: results, (results) =>
+              setCache = (results) =>
+                chrome.storage.local.set lastSearchCache:
+                  results: results
+                  datetime: new Date().getTime()
+                  query: @query
+                  startTime: startTime
+                  endTime: endTime
 
             if startTime && endTime
               new Processor 'range_sanitizer.js', {
@@ -43,8 +44,9 @@ class Search
                   endTime: endTime
                 results: results
               }, (sanitizedResults) =>
-                setCache(sanitizedResults)
-                callback parse(sanitizedResults)
+                new Processor 'groomer.js', results: sanitizedResults, (results) =>
+                  setCache(results)
+                  callback parse(results)
             else
               setCache(results)
               callback parse(results)
@@ -69,21 +71,5 @@ class Search
           if i == history.length
             @expireCache()
             callback()
-
-parse = (visits) ->
-  for visit, i in visits
-    fillInVisit(visit)
-
-fillInVisit = (visit) ->
-  visit.host = getDomain(visit.url)
-  visit.location = visit.url
-  visit.path = visit.url.replace(visit.domain, '')
-  visit.title = '(No Title)' if visit.title == ''
-  visit.name = visit.title
-  visit
-
-getDomain = (url) ->
-  match = url.match(/\w+:\/\/(.*?)\//)
-  if match == null then null else match[0]
 
 module.exports = Search
