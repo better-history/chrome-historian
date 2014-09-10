@@ -2,20 +2,16 @@ class SearchSanitizer
   run: (results, @options) ->
     @terms = @options.text.split(' ')
 
-    prunedResults = []
+    out = []
+
     for result in results
-      if prunedResults.length >= 1000
+      if out.length >= 1000
         break
       else
-        result.location = result.url
-        result.name = result.title
+        out.push(result) if @verifyTextMatch(result)
 
-        if @verifyTextMatch(result)
-          @removeScriptTags(result)
-          prunedResults.push(result)
-
-    prunedResults.sort(@sortByTime)
-    prunedResults
+    out.sort(@sortByTime)
+    out
 
   verifyTextMatch: (result) ->
     hits = []
@@ -27,11 +23,6 @@ class SearchSanitizer
         hits.push(true)
 
     if @terms? && hits.length == @terms.length then true else false
-
-  removeScriptTags: (result) ->
-    regex = /<(.|\n)*?>/ig
-    for property in ['title', 'url', 'location']
-      result[property] = result[property].replace(regex, "")
 
   sortByTime: (a, b) ->
     return -1 if a.lastVisitTime > b.lastVisitTime

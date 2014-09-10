@@ -11,19 +11,6 @@ module.exports =
       a++
     out
 
-  visitsWithScriptTag: ->
-    [
-      {
-        title: "test<script>alert(\"yo\")</script>"
-        url: "yahoo.com"
-        lastVisitTime: new Date("September 12, 2010")
-      }, {
-        title: "test"
-        url: "yahoo.com<script>alert(\"yo\")</script>"
-        lastVisitTime: new Date("September 12, 2010")
-      }
-    ]
-
   outOfOrderVisits: ->
     [
       {

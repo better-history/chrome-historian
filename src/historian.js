@@ -1,10 +1,79 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+var ActiveSessions, ChromeHistoryAPI, Processor;
+
+ChromeHistoryAPI = require('./chrome_history_api.coffee');
+
+Processor = require('./processor.coffee');
+
+ActiveSessions = (function() {
+  function ActiveSessions() {
+    this.history = new ChromeHistoryAPI();
+  }
+
+  ActiveSessions.prototype.fetchDevices = function(callback) {
+    return this.history.sessions(function(devices) {
+      var device, names;
+      names = (function() {
+        var _i, _len, _results;
+        _results = [];
+        for (_i = 0, _len = devices.length; _i < _len; _i++) {
+          device = devices[_i];
+          _results.push({
+            name: device.deviceName,
+            lastChanged: device.sessions[0].lastModified
+          });
+        }
+        return _results;
+      })();
+      return callback(names);
+    });
+  };
+
+  ActiveSessions.prototype.fetchDeviceSession = function(name, callback) {
+    return this.history.sessions(function(devices) {
+      var device, visits, _i, _len, _results;
+      _results = [];
+      for (_i = 0, _len = devices.length; _i < _len; _i++) {
+        device = devices[_i];
+        if (device.deviceName === name) {
+          visits = device.sessions[0].window.tabs;
+          _results.push(new Processor('groomer.js', {
+            results: visits
+          }, function(results) {
+            return callback(results);
+          }));
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
+    });
+  };
+
+  return ActiveSessions;
+
+})();
+
+module.exports = ActiveSessions;
+
+
+
+},{"./chrome_history_api.coffee":2,"./processor.coffee":5}],2:[function(require,module,exports){
 var ChromeHistoryAPI;
 
 ChromeHistoryAPI = (function() {
   function ChromeHistoryAPI(chromeAPI) {
     this.chromeAPI = chromeAPI != null ? chromeAPI : chrome;
   }
+
+  ChromeHistoryAPI.prototype.sessions = function(callback) {
+    if (callback == null) {
+      callback = function() {};
+    }
+    return this.chromeAPI.sessions.getDevices(function(devices) {
+      return callback(devices);
+    });
+  };
 
   ChromeHistoryAPI.prototype.query = function(options, callback) {
     if (callback == null) {
@@ -65,7 +134,7 @@ module.exports = ChromeHistoryAPI;
 
 
 
-},{}],2:[function(require,module,exports){
+},{}],3:[function(require,module,exports){
 var ChromeHistoryAPI, Day, Processor;
 
 ChromeHistoryAPI = require('./chrome_history_api.coffee');
@@ -99,7 +168,11 @@ Day = (function() {
           results: results
         };
         return new Processor('range_sanitizer.js', options, function(visits) {
-          return callback(visits);
+          return new Processor('groomer.js', {
+            results: visits
+          }, function(visits) {
+            return callback(visits);
+          });
         });
       };
     })(this));
@@ -149,7 +222,7 @@ module.exports = Day;
 
 
 
-},{"./chrome_history_api.coffee":1,"./processor.coffee":4}],3:[function(require,module,exports){
+},{"./chrome_history_api.coffee":2,"./processor.coffee":5}],4:[function(require,module,exports){
 var ChromeHistoryAPI, historyAPI,
   __slice = [].slice;
 
@@ -158,6 +231,7 @@ ChromeHistoryAPI = require('./chrome_history_api.coffee');
 historyAPI = new ChromeHistoryAPI();
 
 window.Historian = {
+  ActiveSessions: require('./active_sessions.coffee'),
   Day: require('./day.coffee'),
   Search: require('./search.coffee'),
   deleteUrl: function() {
@@ -179,12 +253,15 @@ window.Historian = {
 
 
 
-},{"./chrome_history_api.coffee":1,"./day.coffee":2,"./search.coffee":5}],4:[function(require,module,exports){
+},{"./active_sessions.coffee":1,"./chrome_history_api.coffee":2,"./day.coffee":3,"./search.coffee":6}],5:[function(require,module,exports){
 var Processor;
 
 Processor = (function() {
   function Processor(file, options, callback) {
     var path, worker;
+    if (options == null) {
+      options = {};
+    }
     path = options.path || "scripts/workers/";
     worker = new Worker(path + file);
     worker.postMessage(options);
@@ -206,8 +283,8 @@ module.exports = Processor;
 
 
 
-},{}],5:[function(require,module,exports){
-var ChromeHistoryAPI, Processor, Search, fillInVisit, getDomain, parse;
+},{}],6:[function(require,module,exports){
+var ChromeHistoryAPI, Processor, Search;
 
 ChromeHistoryAPI = require('./chrome_history_api.coffee');
 
@@ -248,18 +325,22 @@ Search = (function() {
               results: history
             };
             return new Processor('search_sanitizer.js', options, function(results) {
-              var setCache;
-              setCache = function(results) {
-                return chrome.storage.local.set({
-                  lastSearchCache: {
-                    results: results,
-                    datetime: new Date().getTime(),
-                    query: _this.query,
-                    startTime: startTime,
-                    endTime: endTime
-                  }
-                });
-              };
+              new Processor('groomer.js', {
+                results: results
+              }, function(results) {
+                var setCache;
+                return setCache = function(results) {
+                  return chrome.storage.local.set({
+                    lastSearchCache: {
+                      results: results,
+                      datetime: new Date().getTime(),
+                      query: _this.query,
+                      startTime: startTime,
+                      endTime: endTime
+                    }
+                  });
+                };
+              });
               if (startTime && endTime) {
                 return new Processor('range_sanitizer.js', {
                   options: {
@@ -268,8 +349,12 @@ Search = (function() {
                   },
                   results: results
                 }, function(sanitizedResults) {
-                  setCache(sanitizedResults);
-                  return callback(parse(sanitizedResults));
+                  return new Processor('groomer.js', {
+                    results: sanitizedResults
+                  }, function(results) {
+                    setCache(results);
+                    return callback(parse(results));
+                  });
                 });
               } else {
                 setCache(results);
@@ -331,39 +416,8 @@ Search = (function() {
 
 })();
 
-parse = function(visits) {
-  var i, visit, _i, _len, _results;
-  _results = [];
-  for (i = _i = 0, _len = visits.length; _i < _len; i = ++_i) {
-    visit = visits[i];
-    _results.push(fillInVisit(visit));
-  }
-  return _results;
-};
-
-fillInVisit = function(visit) {
-  visit.host = getDomain(visit.url);
-  visit.location = visit.url;
-  visit.path = visit.url.replace(visit.domain, '');
-  if (visit.title === '') {
-    visit.title = '(No Title)';
-  }
-  visit.name = visit.title;
-  return visit;
-};
-
-getDomain = function(url) {
-  var match;
-  match = url.match(/\w+:\/\/(.*?)\//);
-  if (match === null) {
-    return null;
-  } else {
-    return match[0];
-  }
-};
-
 module.exports = Search;
 
 
 
-},{"./chrome_history_api.coffee":1,"./processor.coffee":4}]},{},[3]);
+},{"./chrome_history_api.coffee":2,"./processor.coffee":5}]},{},[4]);
