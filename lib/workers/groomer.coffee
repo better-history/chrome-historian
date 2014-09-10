@@ -2,7 +2,6 @@ class Groomer
   run: (results) ->
     for result in results
       @removeScriptTags
-        location: result.url
         url: result.url
         lastVisitTime: result.lastVisitTime
         host: getDomain(result.url)
@@ -10,7 +9,7 @@ class Groomer
 
   removeScriptTags: (result) ->
     regex = /<(.|\n)*?>/ig
-    for property in ['title', 'url', 'location']
+    for property in ['title', 'url']
       result[property] = result[property].replace(regex, "")
     result
 

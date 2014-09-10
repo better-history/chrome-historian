@@ -11,7 +11,6 @@
       for (_i = 0, _len = results.length; _i < _len; _i++) {
         result = results[_i];
         _results.push(this.removeScriptTags({
-          location: result.url,
           url: result.url,
           lastVisitTime: result.lastVisitTime,
           host: getDomain(result.url),
@@ -24,7 +23,7 @@
     Groomer.prototype.removeScriptTags = function(result) {
       var property, regex, _i, _len, _ref;
       regex = /<(.|\n)*?>/ig;
-      _ref = ['title', 'url', 'location'];
+      _ref = ['title', 'url'];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         property = _ref[_i];
         result[property] = result[property].replace(regex, "");

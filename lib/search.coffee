@@ -28,14 +28,13 @@ class Search
             results: history
 
           new Processor 'search_sanitizer.js', options, (results) =>
-            new Processor 'groomer.js', results: results, (results) =>
-              setCache = (results) =>
-                chrome.storage.local.set lastSearchCache:
-                  results: results
-                  datetime: new Date().getTime()
-                  query: @query
-                  startTime: startTime
-                  endTime: endTime
+            setCache = (results) =>
+              chrome.storage.local.set lastSearchCache:
+                results: results
+                datetime: new Date().getTime()
+                query: @query
+                startTime: startTime
+                endTime: endTime
 
             if startTime && endTime
               new Processor 'range_sanitizer.js', {
@@ -46,10 +45,11 @@ class Search
               }, (sanitizedResults) =>
                 new Processor 'groomer.js', results: sanitizedResults, (results) =>
                   setCache(results)
-                  callback parse(results)
+                  callback results
             else
-              setCache(results)
-              callback parse(results)
+              new Processor 'groomer.js', results: results, (results) =>
+                setCache(results)
+                callback results
 
   expireCache: ->
     chrome.storage.local.remove 'lastSearchCache'

@@ -346,22 +346,18 @@ Search = (function() {
               results: history
             };
             return new Processor('search_sanitizer.js', options, function(results) {
-              new Processor('groomer.js', {
-                results: results
-              }, function(results) {
-                var setCache;
-                return setCache = function(results) {
-                  return chrome.storage.local.set({
-                    lastSearchCache: {
-                      results: results,
-                      datetime: new Date().getTime(),
-                      query: _this.query,
-                      startTime: startTime,
-                      endTime: endTime
-                    }
-                  });
-                };
-              });
+              var setCache;
+              setCache = function(results) {
+                return chrome.storage.local.set({
+                  lastSearchCache: {
+                    results: results,
+                    datetime: new Date().getTime(),
+                    query: _this.query,
+                    startTime: startTime,
+                    endTime: endTime
+                  }
+                });
+              };
               if (startTime && endTime) {
                 return new Processor('range_sanitizer.js', {
                   options: {
@@ -374,12 +370,16 @@ Search = (function() {
                     results: sanitizedResults
                   }, function(results) {
                     setCache(results);
-                    return callback(parse(results));
+                    return callback(results);
                   });
                 });
               } else {
-                setCache(results);
-                return callback(parse(results));
+                return new Processor('groomer.js', {
+                  results: results
+                }, function(results) {
+                  setCache(results);
+                  return callback(results);
+                });
               }
             });
           });

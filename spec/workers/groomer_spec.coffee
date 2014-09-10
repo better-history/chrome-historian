@@ -13,11 +13,6 @@ describe "Groomer WebWorker", ->
     expect(groomedVisits[2].title).toEqual '(No title)'
 
   describe "Additional properties", ->
-    it "sets a property called location to be equal to the url", ->
-      visits = Fixtures.variousVisits()
-      groomedVisits = @groomer.run(visits)
-      expect(groomedVisits[0].location).toEqual 'http://baking.com/recipes'
-
     it "sets a property for the url's host", ->
       visits = Fixtures.variousVisits()
       groomedVisits = @groomer.run(visits)
@@ -31,4 +26,4 @@ describe "Groomer WebWorker", ->
       groomedVisits = @groomer.run(visits)
 
       expect(groomedVisits[0].title).toEqual("testalert(\"yo\")")
-      expect(groomedVisits[1].location).toEqual("yahoo.comalert(\"yo\")")
+      expect(groomedVisits[1].url).toEqual("yahoo.comalert(\"yo\")")
