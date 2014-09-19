@@ -53,18 +53,21 @@ Easily interaction with Device browser sessions that are logged into the same Go
 ```coffee
   historian = new Historian.Devices()
 
-  devices = historian.fetch (devices) ->
+  historian.fetch (devices) ->
     if devices
       console.log(devices) # ['Nexus 5', 'Desktop', 'Nexus 7']
     else
       console.log('Feature is not supported in your browser version')
 
-  historian.fetchSessions(device[0], (sessions) ->
-    console.log(sessions)
-    # [{
-    #   sessionId: 'session_sync43908482591051-257446.1'
-    #   sites: []
-    # }]
+    # ...a bit later
+
+    if devices
+      historian.fetchSessions(devices[0], (sessions) ->
+        console.log(sessions)
+        # [{
+        #   sessionId: 'session_sync43908482591051-257446.1'
+        #   sites: []
+        # }]
 ```
 
 
