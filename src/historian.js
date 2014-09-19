@@ -126,7 +126,6 @@ Day = (function() {
     };
     return this.history.query(options, (function(_this) {
       return function(results) {
-        results = false;
         if (results) {
           options = {
             options: options,
@@ -205,7 +204,6 @@ Devices = (function() {
   Devices.prototype.fetch = function(callback) {
     return this.history.sessions(function(devices) {
       var device, names;
-      devices = false;
       if (devices) {
         names = (function() {
           var _i, _len, _results;
