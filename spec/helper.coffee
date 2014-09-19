@@ -7,3 +7,5 @@ beforeEach ->
       deleteRange: jasmine.createSpy("deleteRange")
       deleteUrl: jasmine.createSpy("deleteUrl")
       deleteAll: jasmine.createSpy("deleteAll")
+    sessions:
+      getDevices: jasmine.createSpy("getDevices")

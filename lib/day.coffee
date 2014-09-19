@@ -19,13 +19,16 @@ class Day
       maxResults: 5000
 
     @history.query options, (results) =>
-      options =
-        options: options
-        results: results
+      if results
+        options =
+          options: options
+          results: results
 
-      new Processor 'range_sanitizer.js', options, (visits) ->
-        new Processor 'groomer.js', results: visits, (visits) ->
-          callback(visits)
+        new Processor 'range_sanitizer.js', options, (visits) ->
+          new Processor 'groomer.js', results: visits, (visits) ->
+            callback(visits)
+      else
+        callback(false)
 
   destroy: (callback = ->) ->
     options =

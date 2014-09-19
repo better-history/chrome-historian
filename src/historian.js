@@ -7,49 +7,70 @@ ChromeHistoryAPI = (function() {
   }
 
   ChromeHistoryAPI.prototype.sessions = function(callback) {
+    var _ref;
     if (callback == null) {
       callback = function() {};
     }
-    return this.chromeAPI.sessions.getDevices(function(devices) {
-      return callback(devices);
-    });
+    if (((_ref = this.chromeAPI.sessions) != null ? _ref.getDevices : void 0) != null) {
+      return this.chromeAPI.sessions.getDevices(function(devices) {
+        return callback(devices);
+      });
+    } else {
+      return callback(false);
+    }
   };
 
   ChromeHistoryAPI.prototype.query = function(options, callback) {
+    var _ref;
     if (callback == null) {
       callback = function() {};
     }
-    return this.chromeAPI.history.search(options, (function(_this) {
-      return function(visits) {
-        return callback(visits);
-      };
-    })(this));
+    if (((_ref = this.chromeAPI.history) != null ? _ref.search : void 0) != null) {
+      return this.chromeAPI.history.search(options, (function(_this) {
+        return function(visits) {
+          return callback(visits);
+        };
+      })(this));
+    } else {
+      return callback(false);
+    }
   };
 
   ChromeHistoryAPI.prototype.deleteAll = function(callback) {
+    var _ref;
     if (callback == null) {
       callback = function() {};
     }
-    return this.chromeAPI.history.deleteAll(function() {
-      return callback();
-    });
+    if (((_ref = this.chromeAPI.history) != null ? _ref.deleteAll : void 0) != null) {
+      return this.chromeAPI.history.deleteAll(function() {
+        return callback();
+      });
+    } else {
+      return callback(false);
+    }
   };
 
   ChromeHistoryAPI.prototype.deleteUrl = function(url, callback) {
+    var _ref;
     if (callback == null) {
       callback = function() {};
     }
     if (url == null) {
       throw "Url needed";
     }
-    return this.chromeAPI.history.deleteUrl({
-      url: url
-    }, function() {
-      return callback();
-    });
+    if (((_ref = this.chromeAPI.history) != null ? _ref.deleteUrl : void 0) != null) {
+      return this.chromeAPI.history.deleteUrl({
+        url: url
+      }, function() {
+        return callback();
+      });
+    } else {
+      return callback(false);
+    }
   };
 
   ChromeHistoryAPI.prototype.deleteRange = function(range, callback) {
+    var _ref;
     if (callback == null) {
       callback = function() {};
     }
@@ -59,11 +80,13 @@ ChromeHistoryAPI = (function() {
     if (range.endTime == null) {
       throw "End time needed";
     }
-    return this.chromeAPI.history.deleteRange(range, (function(_this) {
-      return function() {
+    if (((_ref = this.chromeAPI.history) != null ? _ref.deleteRange : void 0) != null) {
+      return this.chromeAPI.history.deleteRange(range, function() {
         return callback();
-      };
-    })(this));
+      });
+    } else {
+      return callback(false);
+    }
   };
 
   return ChromeHistoryAPI;
@@ -103,17 +126,21 @@ Day = (function() {
     };
     return this.history.query(options, (function(_this) {
       return function(results) {
-        options = {
-          options: options,
-          results: results
-        };
-        return new Processor('range_sanitizer.js', options, function(visits) {
-          return new Processor('groomer.js', {
-            results: visits
-          }, function(visits) {
-            return callback(visits);
+        if (results) {
+          options = {
+            options: options,
+            results: results
+          };
+          return new Processor('range_sanitizer.js', options, function(visits) {
+            return new Processor('groomer.js', {
+              results: visits
+            }, function(visits) {
+              return callback(visits);
+            });
           });
-        });
+        } else {
+          return callback(false);
+        }
       };
     })(this));
   };
@@ -177,19 +204,23 @@ Devices = (function() {
   Devices.prototype.fetch = function(callback) {
     return this.history.sessions(function(devices) {
       var device, names;
-      names = (function() {
-        var _i, _len, _results;
-        _results = [];
-        for (_i = 0, _len = devices.length; _i < _len; _i++) {
-          device = devices[_i];
-          _results.push({
-            name: device.deviceName,
-            lastChanged: device.sessions[0].lastModified
-          });
-        }
-        return _results;
-      })();
-      return callback(names);
+      if (devices) {
+        names = (function() {
+          var _i, _len, _results;
+          _results = [];
+          for (_i = 0, _len = devices.length; _i < _len; _i++) {
+            device = devices[_i];
+            _results.push({
+              name: device.deviceName,
+              lastChanged: device.sessions[0].lastModified
+            });
+          }
+          return _results;
+        })();
+        return callback(names);
+      } else {
+        return callback(false);
+      }
     });
   };
 
