@@ -16,7 +16,10 @@ The Chrome History API has been known to return visits that do not fall between 
   dayHistorian = new Historian.Day(new Date())
 
   dayHistorian.fetch (visits) ->
-    console.log(visits)
+    if visits
+      console.log(visits)
+    else
+      console.log('Feature is not supported in your browser version')
 
   dayHistorian.destroy()
 
@@ -50,8 +53,11 @@ Easily interaction with Device browser sessions that are logged into the same Go
 ```coffee
   historian = new Historian.Devices()
 
-  devices = historian.fetch()
-  # ['Nexus 5', 'Desktop', 'Nexus 7']
+  devices = historian.fetch (devices) ->
+    if devices
+      console.log(devices) # ['Nexus 5', 'Desktop', 'Nexus 7']
+    else
+      console.log('Feature is not supported in your browser version')
 
   historian.fetchSessions(device[0], (sessions) ->
     console.log(sessions)
