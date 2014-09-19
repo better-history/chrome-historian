@@ -126,17 +126,22 @@ Day = (function() {
     };
     return this.history.query(options, (function(_this) {
       return function(results) {
-        options = {
-          options: options,
-          results: results
-        };
-        return new Processor('range_sanitizer.js', options, function(visits) {
-          return new Processor('groomer.js', {
-            results: visits
-          }, function(visits) {
-            return callback(visits);
+        results = false;
+        if (results) {
+          options = {
+            options: options,
+            results: results
+          };
+          return new Processor('range_sanitizer.js', options, function(visits) {
+            return new Processor('groomer.js', {
+              results: visits
+            }, function(visits) {
+              return callback(visits);
+            });
           });
-        });
+        } else {
+          return callback(false);
+        }
       };
     })(this));
   };
@@ -200,19 +205,24 @@ Devices = (function() {
   Devices.prototype.fetch = function(callback) {
     return this.history.sessions(function(devices) {
       var device, names;
-      names = (function() {
-        var _i, _len, _results;
-        _results = [];
-        for (_i = 0, _len = devices.length; _i < _len; _i++) {
-          device = devices[_i];
-          _results.push({
-            name: device.deviceName,
-            lastChanged: device.sessions[0].lastModified
-          });
-        }
-        return _results;
-      })();
-      return callback(names);
+      devices = false;
+      if (devices) {
+        names = (function() {
+          var _i, _len, _results;
+          _results = [];
+          for (_i = 0, _len = devices.length; _i < _len; _i++) {
+            device = devices[_i];
+            _results.push({
+              name: device.deviceName,
+              lastChanged: device.sessions[0].lastModified
+            });
+          }
+          return _results;
+        })();
+        return callback(names);
+      } else {
+        return callback(false);
+      }
     });
   };
 

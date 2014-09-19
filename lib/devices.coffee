@@ -7,13 +7,16 @@ class Devices
 
   fetch: (callback) ->
     @history.sessions (devices) ->
-      names = for device in devices
-        {
-          name: device.deviceName
-          lastChanged: device.sessions[0].lastModified
-        }
+      if devices
+        names = for device in devices
+          {
+            name: device.deviceName
+            lastChanged: device.sessions[0].lastModified
+          }
 
-      callback(names)
+        callback(names)
+      else
+        callback(false)
 
   fetchSessions: (name, callback) ->
     out = []
