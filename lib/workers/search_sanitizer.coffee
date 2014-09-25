@@ -18,7 +18,7 @@ class SearchSanitizer
     regExp = null
 
     for term in @terms
-      regExp = new RegExp(term, "i")
+      regExp = new RegExp(escapeRegExp(term), "i")
       if result.url.match(regExp) || result.title.match(regExp)
         hits.push(true)
 
@@ -28,6 +28,9 @@ class SearchSanitizer
     return -1 if a.lastVisitTime > b.lastVisitTime
     return 1 if a.lastVisitTime < b.lastVisitTime
     0
+
+escapeRegExp = (str) ->
+  str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")
 
 if onServer?
   module.exports = SearchSanitizer

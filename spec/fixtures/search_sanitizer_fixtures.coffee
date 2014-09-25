@@ -24,6 +24,23 @@ module.exports =
       }
     ]
 
+  visitsWithSpecialCharacters: ->
+    [
+      {
+        title: "(C++ tutorials)"
+        url: "http://c-plusplus.com"
+        lastVisitTime: new Date("September 12, 2010 4:00 pm")
+      }, {
+        title: "I got a C+ on my test"
+        url: "http://tests.com/c"
+        lastVisitTime: new Date("September 12, 2010 3:00 pm")
+      }, {
+        title: "I got a D+ on my test"
+        url: "http://tests.com/d"
+        lastVisitTime: new Date("September 12, 2010 3:00 pm")
+      }
+    ]
+
   outOfOrderVisits: ->
     [
       {
