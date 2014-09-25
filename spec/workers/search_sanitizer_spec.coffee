@@ -24,3 +24,10 @@ describe "SearchSanitizer WebWorker", ->
 
     titles = (visit.title for visit in sanitizedVisits)
     expect(titles).toEqual ['biking tips for camping', 'camping', 'Great camping']
+
+  it "escapes special characters", ->
+    visits = Fixtures.visitsWithSpecialCharacters()
+    sanitizedVisits = @searchSanitizer.run(visits, text: '(c+')
+
+    titles = (visit.title for visit in sanitizedVisits)
+    expect(titles).toEqual ['(C++ tutorials)']
