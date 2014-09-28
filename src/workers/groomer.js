@@ -10,12 +10,17 @@
       _results = [];
       for (_i = 0, _len = results.length; _i < _len; _i++) {
         result = results[_i];
-        _results.push(this.removeScriptTags({
-          url: result.url,
-          lastVisitTime: result.lastVisitTime,
-          host: getDomain(result.url),
-          title: result.title || '(No title)'
-        }));
+        if (result.filename != null) {
+          result.host = getDomain(result.url);
+          _results.push(this.removeScriptTags(result));
+        } else {
+          _results.push(this.removeScriptTags({
+            url: result.url,
+            lastVisitTime: result.lastVisitTime,
+            host: getDomain(result.url),
+            title: result.title || '(No title)'
+          }));
+        }
       }
       return _results;
     };
@@ -26,7 +31,9 @@
       _ref = ['title', 'url'];
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         property = _ref[_i];
-        result[property] = result[property].replace(regex, "");
+        if (result[property] != null) {
+          result[property] = result[property].replace(regex, "");
+        }
       }
       return result;
     };
