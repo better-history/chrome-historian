@@ -22,10 +22,40 @@ describe "BH.Chrome.History", ->
         maxResults: 0, text: ''
       , jasmine.any(Function)
 
-    it "calls the callback with 'false' when search is not found on the chrome API", ->
-      delete @history.chromeAPI.history.search
-      @history.query(maxResults: 0, text: '', @callback)
-      expect(@callback).toHaveBeenCalledWith false
+    it "calls to the chrome download method with the readjusted passed options", ->
+      @history.query(startTime: '22222222', endTime: '33333333')
+      expect(chrome.downloads.search).toHaveBeenCalledWith
+        startedAfter: '22222222'
+      , jasmine.any(Function)
+
+    it 'calls the callback with the concated results from history and downloads', ->
+      @history.chromeAPI.history.search.andCallFake (options, callback) ->
+        callback(['history'])
+      @history.chromeAPI.downloads.search.andCallFake (options, callback) ->
+        callback(['downloads'])
+
+      @history.query({}, @callback)
+      expect(@callback).toHaveBeenCalledWith ['history', 'downloads']
+
+
+
+    describe 'when the chrome download method is not supported (and the history method is)', ->
+      beforeEach ->
+        delete @history.chromeAPI.downloads.search
+        @history.chromeAPI.history.search.andCallFake (options, callback) ->
+          callback()
+
+      it 'still works', ->
+        @history.query(maxResults: 0, text: '', @callback)
+        expect(@callback).toHaveBeenCalled()
+
+    describe 'when the chrome search method is not supported', ->
+      beforeEach ->
+        delete @history.chromeAPI.history.search
+
+      it "calls the callback with 'false' when search is not found on the chrome API", ->
+        @history.query(maxResults: 0, text: '', @callback)
+        expect(@callback).toHaveBeenCalledWith false
 
   describe "#deleteAll", ->
     it "calls to the chrome history delete all method", ->

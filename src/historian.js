@@ -21,16 +21,38 @@ ChromeHistoryAPI = (function() {
   };
 
   ChromeHistoryAPI.prototype.query = function(options, callback) {
-    var _ref;
+    var calls, results, wrappedCallback, _ref, _ref1;
     if (callback == null) {
       callback = function() {};
     }
+    calls = 0;
+    results = [];
+    wrappedCallback = (function(_this) {
+      return function(visits) {
+        var _ref;
+        calls += 1;
+        results = results.concat(visits);
+        if (calls === 2 || (((_ref = _this.chromeAPI.downloads) != null ? _ref.search : void 0) == null)) {
+          return callback(results);
+        }
+      };
+    })(this);
     if (((_ref = this.chromeAPI.history) != null ? _ref.search : void 0) != null) {
-      return this.chromeAPI.history.search(options, (function(_this) {
+      this.chromeAPI.history.search(options, (function(_this) {
         return function(visits) {
-          return callback(visits);
+          return wrappedCallback(visits);
         };
       })(this));
+      if (((_ref1 = this.chromeAPI.downloads) != null ? _ref1.search : void 0) != null) {
+        options = {
+          startedAfter: options.startTime
+        };
+        return this.chromeAPI.downloads.search(options, (function(_this) {
+          return function(visits) {
+            return wrappedCallback(visits);
+          };
+        })(this));
+      }
     } else {
       return callback(false);
     }

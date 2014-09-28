@@ -1,16 +1,21 @@
 class Groomer
   run: (results) ->
     for result in results
-      @removeScriptTags
-        url: result.url
-        lastVisitTime: result.lastVisitTime
-        host: getDomain(result.url)
-        title:  result.title || '(No title)'
+      if result.filename?
+        result.host = getDomain(result.url)
+        @removeScriptTags result
+      else
+        @removeScriptTags
+          url: result.url
+          lastVisitTime: result.lastVisitTime
+          host: getDomain(result.url)
+          title:  result.title || '(No title)'
 
   removeScriptTags: (result) ->
     regex = /<(.|\n)*?>/ig
     for property in ['title', 'url']
-      result[property] = result[property].replace(regex, "")
+      if result[property]?
+        result[property] = result[property].replace(regex, "")
     result
 
 getDomain = (url) ->

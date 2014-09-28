@@ -23,8 +23,8 @@ describe "RangeSanitizer WebWorker", ->
     visits = Fixtures.outOfOrderVisits()
     sanitizedVisits = @rangeSanitizer.run(visits, options)
 
-    titles = (visit.title for visit in sanitizedVisits)
-    expect(titles).toEqual ['biking tips', 'amatuer candling making', 'Great camping']
+    urls = (visit.url for visit in sanitizedVisits)
+    expect(urls).toEqual ['biking.com/tips', 'https://iterm2.googlecode.com/files/iTerm2_v1_0_0.zip', 'candling.com', 'great-camping.com']
 
   it "matches results by checking if the date falls between the searched ranges", ->
     options =
@@ -34,5 +34,5 @@ describe "RangeSanitizer WebWorker", ->
     visits = Fixtures.variousVisits()
     sanitizedVisits = @rangeSanitizer.run(visits, options)
 
-    titles = (visit.title for visit in sanitizedVisits)
-    expect(titles).toEqual ['bread making', 'Baking tips']
+    urls = (visit.url for visit in sanitizedVisits)
+    expect(urls).toEqual ['bread.com', 'baking.com']

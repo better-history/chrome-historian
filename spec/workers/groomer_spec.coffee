@@ -19,6 +19,7 @@ describe "Groomer WebWorker", ->
       expect(groomedVisits[0].host).toEqual 'http://baking.com/'
       expect(groomedVisits[1].host).toEqual 'http://google.com/'
       expect(groomedVisits[2].host).toEqual 'http://bread.com/'
+      expect(groomedVisits[3].host).toEqual 'https://iterm2.googlecode.com/'
 
   describe "Removing script tags", ->
     it "removes any script tags in the title and url", ->
@@ -27,3 +28,4 @@ describe "Groomer WebWorker", ->
 
       expect(groomedVisits[0].title).toEqual("testalert(\"yo\")")
       expect(groomedVisits[1].url).toEqual("yahoo.comalert(\"yo\")")
+      expect(groomedVisits[2].url).toEqual("https://iterm2.googlecode.com/files/iTerm2_v1_0_0.zip")

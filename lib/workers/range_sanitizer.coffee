@@ -10,12 +10,18 @@ class RangeSanitizer
     out
 
   verifyDateRange: (result) ->
-    result.lastVisitTime > @options.startTime && result.lastVisitTime < @options.endTime
+    time = timeOfEvent(result)
+    time > @options.startTime && time < @options.endTime
 
   sortByTime: (a, b) ->
-    return -1 if a.lastVisitTime > b.lastVisitTime
-    return 1 if a.lastVisitTime < b.lastVisitTime
+    aTime = timeOfEvent(a)
+    bTime = timeOfEvent(b)
+    return -1 if aTime > bTime
+    return 1 if aTime < bTime
     0
+
+timeOfEvent = (result) ->
+  result.lastVisitTime || new Date(result.startTime).getTime()
 
 if onServer?
   module.exports = RangeSanitizer

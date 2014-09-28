@@ -9,11 +9,25 @@ class ChromeHistoryAPI
       callback(false)
 
   query: (options, callback = ->) ->
+    calls = 0
+    results = []
+
+    wrappedCallback = (visits) =>
+      calls += 1
+      results = results.concat(visits)
+      callback(results) if calls == 2 || !@chromeAPI.downloads?.search?
+
     if @chromeAPI.history?.search?
       @chromeAPI.history.search options, (visits) =>
-        callback(visits)
+        wrappedCallback(visits)
+
+      if @chromeAPI.downloads?.search?
+        options = startedAfter: options.startTime
+        @chromeAPI.downloads.search options, (visits) =>
+          wrappedCallback(visits)
     else
       callback(false)
+
 
   deleteAll: (callback = ->) ->
     if @chromeAPI.history?.deleteAll?
