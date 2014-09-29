@@ -4,6 +4,7 @@ class Groomer
       if result.filename?
         result.host = getDomain(result.url)
         result.title = getFileName(result.url)
+        result.size = calculateFileSize(result.totalBytes)
         @removeScriptTags result
       else
         result.host = getDomain(result.url)
@@ -23,6 +24,10 @@ getDomain = (url) ->
 getFileName = (url) ->
   match = url.match(/[^//]*$/)
   if match == null then null else match[0]
+
+calculateFileSize = (bytes) ->
+  result = Math.round(bytes / 1048576 * 100000) / 100000
+  result.toFixed(2)
 
 if onServer?
   module.exports = Groomer
