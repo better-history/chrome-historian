@@ -23,9 +23,10 @@ describe "BH.Chrome.History", ->
       , jasmine.any(Function)
 
     it "calls to the chrome download method with the readjusted passed options", ->
-      @history.query(startTime: '22222222', endTime: '33333333')
+      @history.query(endTime: 1411962343498, startTime: 1411880400000)
       expect(chrome.downloads.search).toHaveBeenCalledWith
-        startedAfter: '22222222'
+        endedBefore: '2014-09-29T03:45:43.498Z'
+        startedAfter: '2014-09-28T05:00:00.000Z'
       , jasmine.any(Function)
 
     it 'calls the callback with the concated results from history and downloads', ->

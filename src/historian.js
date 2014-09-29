@@ -44,10 +44,13 @@ ChromeHistoryAPI = (function() {
         };
       })(this));
       if (((_ref1 = this.chromeAPI.downloads) != null ? _ref1.search : void 0) != null) {
-        options = {
-          startedAfter: options.startTime
-        };
-        return this.chromeAPI.downloads.search(options, (function(_this) {
+        if (options.startTime && options.endTime) {
+          options = {
+            startedAfter: new Date(options.startTime).toISOString(),
+            endedBefore: new Date(options.endTime).toISOString()
+          };
+        }
+        return this.chromeAPI.downloads.search(options || {}, (function(_this) {
           return function(visits) {
             return wrappedCallback(visits);
           };

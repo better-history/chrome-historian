@@ -22,8 +22,12 @@ class ChromeHistoryAPI
         wrappedCallback(visits)
 
       if @chromeAPI.downloads?.search?
-        options = startedAfter: options.startTime
-        @chromeAPI.downloads.search options, (visits) =>
+        if options.startTime && options.endTime
+          options =
+            startedAfter: new Date(options.startTime).toISOString()
+            endedBefore: new Date(options.endTime).toISOString()
+
+        @chromeAPI.downloads.search options || {}, (visits) =>
           wrappedCallback(visits)
     else
       callback(false)
