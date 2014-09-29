@@ -11,6 +11,7 @@ describe "Groomer WebWorker", ->
     groomedVisits = @groomer.run(visits)
     expect(groomedVisits[0].title).toEqual 'Baking tips'
     expect(groomedVisits[2].title).toEqual '(No title)'
+    expect(groomedVisits[3].title).toEqual 'iTerm2_v1_0_0.zip'
 
   describe "Additional properties", ->
     it "sets a property for the url's host", ->
