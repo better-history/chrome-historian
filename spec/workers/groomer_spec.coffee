@@ -12,6 +12,16 @@ describe "Groomer WebWorker", ->
     expect(groomedVisits[0].title).toEqual 'Baking tips'
     expect(groomedVisits[2].title).toEqual '(No title)'
 
+  it 'extracts the filename and sets it as the title', ->
+    visits = Fixtures.variousVisits()
+    groomedVisits = @groomer.run(visits)
+    expect(groomedVisits[3].title).toEqual 'iTerm2_v1_0_0.zip'
+
+  it 'represents a file\'s size in the correct scale', ->
+    visits = Fixtures.variousVisits()
+    groomedVisits = @groomer.run(visits)
+    expect(groomedVisits[3].size).toEqual '3.61'
+
   describe "Additional properties", ->
     it "sets a property for the url's host", ->
       visits = Fixtures.variousVisits()
