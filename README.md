@@ -79,6 +79,8 @@ Simple deleting
 ```coffee
   Historian.deleteUrl('http://google.com')
 
+  Historian.deleteDownload('http://google.com/file.zip')
+
   Historian.deleteRange
     startTime: new Date('Aug 20, 2014')
     endTime: new Date('Aug 30, 2014')
