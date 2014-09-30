@@ -8,7 +8,7 @@ class Groomer
         @removeScriptTags result
       else
         result.host = getDomain(result.url)
-        result.title ?= '(No title)'
+        result.title = '(No title)' if result.title == '' || !result.title?
         @removeScriptTags result
 
   removeScriptTags: (result) ->
