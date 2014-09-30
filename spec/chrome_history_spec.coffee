@@ -81,6 +81,19 @@ describe "BH.Chrome.History", ->
       @history.deleteUrl('http://www.google.com', @callback)
       expect(@callback).toHaveBeenCalledWith false
 
+  describe "#deleteDownload", ->
+    it "calls the chrome downloads erase method with the passed url or file", ->
+      @history.deleteDownload('http://www.google.com/file.zip')
+
+      expect(chrome.downloads.erase).toHaveBeenCalledWith
+        query: ['http://www.google.com/file.zip']
+      , jasmine.any(Function)
+
+    it "calls the callback with 'false' when erase is not found on the chrome API", ->
+      delete @history.chromeAPI.downloads.erase
+      @history.deleteDownload('http://www.google.com/file.zip', @callback)
+      expect(@callback).toHaveBeenCalledWith false
+
   describe "#deleteRange", ->
     beforeEach ->
       @options =
