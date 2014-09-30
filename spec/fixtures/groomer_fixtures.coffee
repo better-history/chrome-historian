@@ -41,6 +41,7 @@ module.exports =
         lastVisitTime: new Date("December 5, 2010")
       }, {
         url: "http://bread.com/"
+        title: ""
         lastVisitTime: new Date("October 13, 2010")
       }, {
         bytesReceived: 3784539,

@@ -17,7 +17,7 @@
           _results.push(this.removeScriptTags(result));
         } else {
           result.host = getDomain(result.url);
-          if (result.title == null) {
+          if (result.title === '' || (result.title == null)) {
             result.title = '(No title)';
           }
           _results.push(this.removeScriptTags(result));
