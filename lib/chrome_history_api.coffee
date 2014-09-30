@@ -49,6 +49,15 @@ class ChromeHistoryAPI
     else
       callback(false)
 
+  deleteDownload: (urlOrFile, callback = ->) ->
+    throw "Url or file needed" unless urlOrFile?
+
+    if @chromeAPI.downloads?.erase?
+      @chromeAPI.downloads.erase query: [urlOrFile], ->
+        callback()
+    else
+      callback(false)
+
   deleteRange: (range, callback = ->) ->
     throw "Start time needed" unless range.startTime?
     throw "End time needed" unless range.endTime?
