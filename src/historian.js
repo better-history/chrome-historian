@@ -94,6 +94,25 @@ ChromeHistoryAPI = (function() {
     }
   };
 
+  ChromeHistoryAPI.prototype.deleteDownload = function(urlOrFile, callback) {
+    var _ref;
+    if (callback == null) {
+      callback = function() {};
+    }
+    if (urlOrFile == null) {
+      throw "Url or file needed";
+    }
+    if (((_ref = this.chromeAPI.downloads) != null ? _ref.erase : void 0) != null) {
+      return this.chromeAPI.downloads.erase({
+        query: [urlOrFile]
+      }, function() {
+        return callback();
+      });
+    } else {
+      return callback(false);
+    }
+  };
+
   ChromeHistoryAPI.prototype.deleteRange = function(range, callback) {
     var _ref;
     if (callback == null) {
