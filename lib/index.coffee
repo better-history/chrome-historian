@@ -7,6 +7,8 @@ window.Historian =
   Search: require('./search.coffee')
   deleteUrl: (args...) ->
     historyAPI.deleteUrl(args...)
+  deleteDownload: (args...) ->
+    historyAPI.deleteDownload(args...)
   deleteRange: (args...) ->
     historyAPI.deleteRange(args...)
   deleteAll: (args...) ->

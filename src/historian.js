@@ -335,6 +335,11 @@ window.Historian = {
     args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
     return historyAPI.deleteUrl.apply(historyAPI, args);
   },
+  deleteDownload: function() {
+    var args;
+    args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
+    return historyAPI.deleteDownload.apply(historyAPI, args);
+  },
   deleteRange: function() {
     var args;
     args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];
