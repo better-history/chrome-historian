@@ -21,7 +21,7 @@ ChromeHistoryAPI = (function() {
   };
 
   ChromeHistoryAPI.prototype.query = function(options, callback) {
-    var calls, results, wrappedCallback, _ref, _ref1;
+    var calls, downloadOptions, results, wrappedCallback, _ref, _ref1;
     if (callback == null) {
       callback = function() {};
     }
@@ -44,13 +44,14 @@ ChromeHistoryAPI = (function() {
         };
       })(this));
       if (((_ref1 = this.chromeAPI.downloads) != null ? _ref1.search : void 0) != null) {
+        downloadOptions = {};
         if (options.startTime && options.endTime) {
-          options = {
+          downloadOptions = {
             startedAfter: new Date(options.startTime).toISOString(),
             endedBefore: new Date(options.endTime).toISOString()
           };
         }
-        return this.chromeAPI.downloads.search(options || {}, (function(_this) {
+        return this.chromeAPI.downloads.search(downloadOptions, (function(_this) {
           return function(visits) {
             return wrappedCallback(visits);
           };
