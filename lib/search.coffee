@@ -64,11 +64,18 @@ class Search
       chrome.storage.local.set data
 
   destroy: (options = {}, callback = ->) ->
+    wrappedCallback = (i, history) =>
+      if i == history.length
+        @expireCache()
+        callback()
+
     @fetch options, (history) =>
       for visit, i in history
-        @history.deleteUrl visit.url, =>
-          if i == history.length
-            @expireCache()
-            callback()
+        if visit.filename?
+          @history.deleteDownload visit.url, =>
+            wrappedCallback(i, history)
+        else
+          @history.deleteUrl visit.url, =>
+            wrappedCallback(i, history)
 
 module.exports = Search
