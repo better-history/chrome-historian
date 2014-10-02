@@ -21,7 +21,7 @@ ChromeHistoryAPI = (function() {
   };
 
   ChromeHistoryAPI.prototype.query = function(options, callback) {
-    var calls, results, wrappedCallback, _ref, _ref1;
+    var calls, downloadOptions, results, wrappedCallback, _ref, _ref1;
     if (callback == null) {
       callback = function() {};
     }
@@ -44,13 +44,14 @@ ChromeHistoryAPI = (function() {
         };
       })(this));
       if (((_ref1 = this.chromeAPI.downloads) != null ? _ref1.search : void 0) != null) {
+        downloadOptions = {};
         if (options.startTime && options.endTime) {
-          options = {
+          downloadOptions = {
             startedAfter: new Date(options.startTime).toISOString(),
             endedBefore: new Date(options.endTime).toISOString()
           };
         }
-        return this.chromeAPI.downloads.search(options || {}, (function(_this) {
+        return this.chromeAPI.downloads.search(downloadOptions, (function(_this) {
           return function(visits) {
             return wrappedCallback(visits);
           };
@@ -419,48 +420,44 @@ Search = (function() {
           return callback(cache.results, new Date(cache.datetime));
         } else {
           return _this.history.query(options, function(history) {
-            options = {
-              options: {
-                text: _this.query
-              },
+            return new Processor('groomer.js', {
               results: history
-            };
-            return new Processor('search_sanitizer.js', options, function(results) {
-              var setCache;
-              setCache = function(results) {
-                return chrome.storage.local.set({
-                  lastSearchCache: {
-                    results: results,
-                    datetime: new Date().getTime(),
-                    query: _this.query,
-                    startTime: startTime,
-                    endTime: endTime
-                  }
-                });
+            }, function(groomedResults) {
+              options = {
+                options: {
+                  text: _this.query
+                },
+                results: groomedResults
               };
-              if (startTime && endTime) {
-                return new Processor('range_sanitizer.js', {
-                  options: {
-                    startTime: startTime,
-                    endTime: endTime
-                  },
-                  results: results
-                }, function(sanitizedResults) {
-                  return new Processor('groomer.js', {
-                    results: sanitizedResults
-                  }, function(results) {
-                    setCache(results);
-                    return callback(results);
+              return new Processor('search_sanitizer.js', options, function(results) {
+                var setCache;
+                setCache = function(results) {
+                  return chrome.storage.local.set({
+                    lastSearchCache: {
+                      results: results,
+                      datetime: new Date().getTime(),
+                      query: _this.query,
+                      startTime: startTime,
+                      endTime: endTime
+                    }
                   });
-                });
-              } else {
-                return new Processor('groomer.js', {
-                  results: results
-                }, function(results) {
+                };
+                if (startTime && endTime) {
+                  return new Processor('range_sanitizer.js', {
+                    options: {
+                      startTime: startTime,
+                      endTime: endTime
+                    },
+                    results: results
+                  }, function(sanitizedResults) {
+                    setCache(sanitizedResults);
+                    return callback(sanitizedResults);
+                  });
+                } else {
                   setCache(results);
                   return callback(results);
-                });
-              }
+                }
+              });
             });
           });
         }
