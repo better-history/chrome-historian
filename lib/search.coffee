@@ -23,31 +23,30 @@ class Search
         callback cache.results, new Date(cache.datetime)
       else
         @history.query options, (history) =>
-          options =
-            options: {text: @query}
-            results: history
+          new Processor 'groomer.js', results: history, (groomedResults) =>
+            options =
+              options: {text: @query}
+              results: groomedResults
 
-          new Processor 'search_sanitizer.js', options, (results) =>
-            setCache = (results) =>
-              chrome.storage.local.set lastSearchCache:
-                results: results
-                datetime: new Date().getTime()
-                query: @query
-                startTime: startTime
-                endTime: endTime
-
-            if startTime && endTime
-              new Processor 'range_sanitizer.js', {
-                options:
+            new Processor 'search_sanitizer.js', options, (results) =>
+              setCache = (results) =>
+                chrome.storage.local.set lastSearchCache:
+                  results: results
+                  datetime: new Date().getTime()
+                  query: @query
                   startTime: startTime
                   endTime: endTime
-                results: results
-              }, (sanitizedResults) =>
-                new Processor 'groomer.js', results: sanitizedResults, (results) =>
-                  setCache(results)
-                  callback results
-            else
-              new Processor 'groomer.js', results: results, (results) =>
+
+              if startTime && endTime
+                new Processor 'range_sanitizer.js', {
+                  options:
+                    startTime: startTime
+                    endTime: endTime
+                  results: results
+                }, (sanitizedResults) =>
+                  setCache(sanitizedResults)
+                  callback sanitizedResults
+              else
                 setCache(results)
                 callback results
 
