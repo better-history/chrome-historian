@@ -486,24 +486,36 @@ Search = (function() {
   };
 
   Search.prototype.destroy = function(options, callback) {
+    var wrappedCallback;
     if (options == null) {
       options = {};
     }
     if (callback == null) {
       callback = function() {};
     }
+    wrappedCallback = (function(_this) {
+      return function(i, history) {
+        if (i === history.length) {
+          _this.expireCache();
+          return callback();
+        }
+      };
+    })(this);
     return this.fetch(options, (function(_this) {
       return function(history) {
         var i, visit, _i, _len, _results;
         _results = [];
         for (i = _i = 0, _len = history.length; _i < _len; i = ++_i) {
           visit = history[i];
-          _results.push(_this.history.deleteUrl(visit.url, function() {
-            if (i === history.length) {
-              _this.expireCache();
-              return callback();
-            }
-          }));
+          if (visit.filename != null) {
+            _results.push(_this.history.deleteDownload(visit.url, function() {
+              return wrappedCallback(i, history);
+            }));
+          } else {
+            _results.push(_this.history.deleteUrl(visit.url, function() {
+              return wrappedCallback(i, history);
+            }));
+          }
         }
         return _results;
       };
