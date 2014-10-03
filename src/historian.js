@@ -398,6 +398,14 @@ Search = (function() {
     this.history = new ChromeHistoryAPI();
   }
 
+  Search.prototype.fetchCache = function(callback) {
+    return chrome.storage.local.get('lastSearchCache', function(_arg) {
+      var lastSearchCache;
+      lastSearchCache = _arg.lastSearchCache;
+      return callback(lastSearchCache || {});
+    });
+  };
+
   Search.prototype.fetch = function(options, callback) {
     var defaultOptions, endTime, startAtResult, startTime;
     if (callback == null) {
@@ -416,11 +424,7 @@ Search = (function() {
       return function(data) {
         var cache;
         cache = data.lastSearchCache;
-        if ((_this.query == null) && ((cache != null ? cache.query : void 0) == null)) {
-          return callback(false);
-        } else if ((_this.query == null) && ((cache != null ? cache.query : void 0) != null)) {
-          return callback(cache.results, new Date(cache.datetime));
-        } else if ((cache != null ? cache.query : void 0) === _this.query && (cache != null ? cache.startTime : void 0) === startTime && (cache != null ? cache.endTime : void 0) === endTime && !startAtResult) {
+        if ((cache != null ? cache.query : void 0) === _this.query && (cache != null ? cache.startTime : void 0) === startTime && (cache != null ? cache.endTime : void 0) === endTime && !startAtResult) {
           return callback(cache.results, new Date(cache.datetime));
         } else {
           return _this.history.query(options, function(history) {
