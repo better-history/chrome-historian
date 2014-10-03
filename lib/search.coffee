@@ -19,7 +19,11 @@ class Search
 
     chrome.storage.local.get 'lastSearchCache', (data) =>
       cache = data.lastSearchCache
-      if cache?.query == @query && cache?.startTime == startTime && cache?.endTime == endTime && !startAtResult
+      if !@query? && !cache?.query?
+        callback false
+      else if !@query? && cache?.query?
+        callback cache.results, new Date(cache.datetime)
+      else if cache?.query == @query && cache?.startTime == startTime && cache?.endTime == endTime && !startAtResult
         callback cache.results, new Date(cache.datetime)
       else
         @history.query options, (history) =>
