@@ -251,13 +251,13 @@ Devices = (function() {
       var device, names;
       if (devices) {
         names = (function() {
-          var _i, _len, _results;
+          var _i, _len, _ref, _results;
           _results = [];
           for (_i = 0, _len = devices.length; _i < _len; _i++) {
             device = devices[_i];
             _results.push({
               name: device.deviceName,
-              lastChanged: device.sessions[0].lastModified
+              lastChanged: (_ref = device.sessions[0]) != null ? _ref.lastModified : void 0
             });
           }
           return _results;

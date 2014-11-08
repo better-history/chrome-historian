@@ -11,7 +11,7 @@ class Devices
         names = for device in devices
           {
             name: device.deviceName
-            lastChanged: device.sessions[0].lastModified
+            lastChanged: device.sessions[0]?.lastModified
           }
 
         callback(names)
