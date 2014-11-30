@@ -6,7 +6,7 @@ A better wrapper for the [Chrome History API](https://developer.chrome.com/exten
 This is the secret sauce behind [Better History](https://chrome.google.com/webstore/detail/better-history/obciceimmggglbmelaidpjlmodcebijb)
 
 [![NPM version](https://badge.fury.io/js/chrome-historian.svg)](http://badge.fury.io/js/chrome-historian)
-[![Build Status](https://travis-ci.org/roykolak/chrome-historian.svg?branch=master)](https://travis-ci.org/roykolak/chrome-historian)
+[![Build Status](https://travis-ci.org/better-history/chrome-historian.svg?branch=master)](https://travis-ci.org/better-history/chrome-historian)
 
 
 Managing a day's history
