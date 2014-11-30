@@ -328,6 +328,9 @@ ChromeHistoryAPI = require('./chrome_history_api.coffee');
 historyAPI = new ChromeHistoryAPI();
 
 window.Historian = {
+  setWorkerPath: function(path) {
+    return this.workerPath = path;
+  },
   Devices: require('./devices.coffee'),
   Day: require('./day.coffee'),
   Search: require('./search.coffee'),
@@ -364,7 +367,7 @@ Processor = (function() {
     if (options == null) {
       options = {};
     }
-    path = options.path || "scripts/workers/";
+    path = Historian.workerPath || "scripts/workers/";
     worker = new Worker(path + file);
     worker.postMessage(options);
     worker.onmessage = function(e) {

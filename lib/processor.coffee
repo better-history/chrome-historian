@@ -1,6 +1,6 @@
 class Processor
   constructor: (file, options = {}, callback) ->
-    path = options.path || "scripts/workers/"
+    path = Historian.workerPath || "scripts/workers/"
     worker = new Worker path + file
     worker.postMessage(options)
     worker.onmessage = (e) ->
