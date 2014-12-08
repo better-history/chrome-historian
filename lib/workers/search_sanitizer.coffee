@@ -1,6 +1,9 @@
 class SearchSanitizer
   run: (results, @options) ->
-    @terms = @options.text.split(' ')
+    if @options.text.match(/^\/.*\/$/)
+      @terms = @options.text.slice(1, -1)
+    else
+      @terms = @options.text.split(' ')
 
     out = []
 
@@ -17,12 +20,22 @@ class SearchSanitizer
     hits = []
     regExp = null
 
-    for term in @terms
-      regExp = new RegExp(escapeRegExp(term), "i")
-      if result.url.match(regExp) || result.title.match(regExp)
-        hits.push(true)
+    if Array.isArray(@terms)
+      for term in @terms
+        regExp = new RegExp(escapeRegExp(term), "i")
+        if result.url.match(regExp) || result.title.match(regExp)
+          hits.push(true)
 
-    if @terms? && hits.length == @terms.length then true else false
+      if hits.length == @terms.length
+        return true
+      else
+        return false
+
+    else
+      regExp = new RegExp(@terms)
+      if result.url.match(regExp) || result.title.match(regExp)
+        return true
+
 
   sortByTime: (a, b) ->
     aTime = timeOfEvent(a)
