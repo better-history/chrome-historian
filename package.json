@@ -1,7 +1,7 @@
 {
   "name": "chrome-historian",
   "description": "A better wrapper for the Chrome History API",
-  "version": "1.8.0",
+  "version": "1.9.0",
   "author": "Roy Kolak <roy.kolak@gmail.com>",
   "scripts": {
     "start": "node_modules/.bin/browserify -t coffeeify lib/index.coffee > src/historian.js; node_modules/.bin/coffee -o src/workers/ lib/workers/*",
