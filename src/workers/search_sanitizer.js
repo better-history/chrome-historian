@@ -8,7 +8,11 @@
     SearchSanitizer.prototype.run = function(results, options) {
       var out, result, _i, _len;
       this.options = options;
-      this.terms = this.options.text.split(' ');
+      if (this.options.text.match(/^\/.*\/$/)) {
+        this.terms = this.options.text.slice(1, -1);
+      } else {
+        this.terms = this.options.text.split(' ');
+      }
       out = [];
       for (_i = 0, _len = results.length; _i < _len; _i++) {
         result = results[_i];
@@ -28,18 +32,25 @@
       var hits, regExp, term, _i, _len, _ref;
       hits = [];
       regExp = null;
-      _ref = this.terms;
-      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
-        term = _ref[_i];
-        regExp = new RegExp(escapeRegExp(term), "i");
-        if (result.url.match(regExp) || result.title.match(regExp)) {
-          hits.push(true);
+      if (Array.isArray(this.terms)) {
+        _ref = this.terms;
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          term = _ref[_i];
+          regExp = new RegExp(escapeRegExp(term), "i");
+          if (result.url.match(regExp) || result.title.match(regExp)) {
+            hits.push(true);
+          }
         }
-      }
-      if ((this.terms != null) && hits.length === this.terms.length) {
-        return true;
+        if (hits.length === this.terms.length) {
+          return true;
+        } else {
+          return false;
+        }
       } else {
-        return false;
+        regExp = new RegExp(this.terms);
+        if (result.url.match(regExp) || result.title.match(regExp)) {
+          return true;
+        }
       }
     };
 

@@ -31,3 +31,9 @@ describe "SearchSanitizer WebWorker", ->
 
     titles = (visit.title for visit in sanitizedVisits)
     expect(titles).toEqual ['(C++ tutorials)']
+
+  it "accepts regexs", ->
+    visits = Fixtures.variousVisits()
+    sanitizedVisits = @searchSanitizer.run(visits, text: '/september/')
+
+    expect(sanitizedVisits.length).toEqual 2
